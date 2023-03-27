@@ -70,4 +70,12 @@ public class ImageViewerWindowController
             imageView.setImage(images.get(currentImageIndex));
         }
     }
+
+    @FXML
+    private void handleBtnStartSlides(ActionEvent actionEvent) {
+    }
+
+    @FXML
+    private void handleBtnStopSlides(ActionEvent actionEvent) {
+    }
 }
