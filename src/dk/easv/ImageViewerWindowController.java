@@ -72,7 +72,10 @@ public class ImageViewerWindowController
     }
 
     @FXML
-    private void handleBtnStartSlides(ActionEvent actionEvent) {
+    private void handleBtnStartSlides(ActionEvent actionEvent) throws InterruptedException {
+        displayImage();
+        Thread.sleep(2000);
+        handleBtnNextAction();
     }
 
     @FXML
