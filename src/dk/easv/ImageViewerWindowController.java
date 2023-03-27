@@ -1,11 +1,17 @@
 package dk.easv;
 
 import java.io.File;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+
+import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.Parent;
+import javafx.scene.control.ProgressBar;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.stage.FileChooser;
@@ -23,6 +29,8 @@ public class ImageViewerWindowController
     @FXML
     private ImageView imageView;
 
+    private  Thread t;
+
     @FXML
     private void handleBtnLoadAction()
     {
@@ -38,7 +46,7 @@ public class ImageViewerWindowController
             {
                 images.add(new Image(f.toURI().toString()));
             });
-            displayImage();
+            //displayImage();
         }
     }
 
@@ -54,7 +62,7 @@ public class ImageViewerWindowController
     }
 
     @FXML
-    private void handleBtnNextAction()
+    public void handleBtnNextAction()
     {
         if (!images.isEmpty())
         {
@@ -72,13 +80,31 @@ public class ImageViewerWindowController
     }
 
     @FXML
-    private void handleBtnStartSlides(ActionEvent actionEvent) throws InterruptedException {
-        displayImage();
-        Thread.sleep(2000);
-        handleBtnNextAction();
+    private void handleBtnStartSlides() throws InterruptedException {
+        Task task = new Task<>() {
+            @Override public Void call() throws InterruptedException {
+
+                for (int i=1; i<=images.size(); i++) {
+                    handleBtnNextAction();
+                    Thread.sleep(1000);
+                    if(i == images.size()){
+                        i = 0;
+                        currentImageIndex = 0;
+
+                    }
+                }
+                return null;
+            }
+        };
+        t = new Thread(task);
+        t.start();
+
     }
 
     @FXML
     private void handleBtnStopSlides(ActionEvent actionEvent) {
+        t.interrupt();
     }
+
+
 }
