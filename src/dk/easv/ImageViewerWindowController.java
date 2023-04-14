@@ -7,10 +7,13 @@ import java.util.List;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 
+import javafx.application.Platform;
 import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.Parent;
+import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.control.ProgressBar;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -21,6 +24,10 @@ import javafx.stage.Stage;
 public class ImageViewerWindowController
 {
     private final List<Image> images = new ArrayList<>();
+    @FXML
+    private Label lblFileName;
+    @FXML
+    private Button btnStartSlideShow, btnStopSlide;
     private int currentImageIndex = 0;
 
     @FXML
@@ -46,7 +53,7 @@ public class ImageViewerWindowController
             {
                 images.add(new Image(f.toURI().toString()));
             });
-            //displayImage();
+            displayImage();
         }
     }
 
@@ -75,12 +82,21 @@ public class ImageViewerWindowController
     {
         if (!images.isEmpty())
         {
-            imageView.setImage(images.get(currentImageIndex));
+            Platform.runLater(new Runnable() {
+                @Override
+                public void run() {
+                    imageView.setImage(images.get(currentImageIndex));
+                    File file = new File(images.get(currentImageIndex).getUrl());
+                    lblFileName.setText("File name: "+file.getName());
+                }
+            });
         }
     }
 
     @FXML
     private void handleBtnStartSlides() throws InterruptedException {
+        btnStartSlideShow.setDisable(true);
+        btnStopSlide.setDisable(false);
         Task task = new Task<>() {
             @Override public Void call() throws InterruptedException {
 
@@ -104,8 +120,8 @@ public class ImageViewerWindowController
 
     @FXML
     private void handleBtnStopSlides(ActionEvent actionEvent) {
+        btnStartSlideShow.setDisable(false);
+        btnStopSlide.setDisable(true);
         t.interrupt();
     }
-
-
 }
