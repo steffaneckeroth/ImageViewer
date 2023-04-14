@@ -40,7 +40,7 @@ public class ImageViewerWindowController
                 "*.png", "*.jpg", "*.gif", "*.tif", "*.bmp"));
         List<File> files = fileChooser.showOpenMultipleDialog(new Stage());
 
-        if (!files.isEmpty())
+        if (files != null && !files.isEmpty())
         {
             files.forEach((File f) ->
             {
@@ -85,8 +85,9 @@ public class ImageViewerWindowController
             @Override public Void call() throws InterruptedException {
 
                 for (int i=1; i<=images.size(); i++) {
-                    handleBtnNextAction();
+                    displayImage();
                     Thread.sleep(1000);
+                    handleBtnNextAction();
                     if(i == images.size()){
                         i = 0;
                         currentImageIndex = 0;
